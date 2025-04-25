@@ -1,7 +1,9 @@
 
-import duckdb
 import cmdstanpy
-
+import duckdb
+import os
+import pathlib
+ 
 # this module contains the functions needed to:
         # 1. connect and return table from duckdb 
         # 2. format the stan data for the stan model
@@ -38,6 +40,20 @@ def execute_query(conn, query: str):
         print(f"Error executing query: {e}")
     finally:
         conn.close()
+
+def get_parquet_file_from_data_folder(filepath: str):
+
+    """
+    Get the path to a parquet file in the data folder.
+    Args:
+        filename (str): Name of the parquet file.
+    Returns:
+        str: Path to the parquet file.
+    """
+    return os.path.sep(filepath)
+    return conn.fetchdf()
+
+
 
 def format_stan_data(df, stan_model):
     """
@@ -83,7 +99,7 @@ def run_stan_model(stan_data, stan_model):
 
 
 __name__ == "__main__":
-    # Example usage
+
     db_path = 'path/to/your/database.duckdb'
     conn = get_duckdb_connection(db_path)
     
@@ -96,5 +112,3 @@ __name__ == "__main__":
     results = run_stan_model(stan_data, stan_model)
     
     print(results)
-
-

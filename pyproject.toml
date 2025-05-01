@@ -1,0 +1,19 @@
+[project]
+name = "sports-statistics"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Mason Veilleux",email = "masonjveilleux@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "polars (>=1.27.1,<2.0.0)",
+    "cmdstanpy (>=1.2.5,<2.0.0)",
+    "duckdb (>=1.2.2,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -8,16 +8,39 @@
 DROP TABLE IF EXISTS nfl.team_alltime;
 
 CREATE TABLE nfl.team_alltime (
-    season INTEGER,
-    team_id VARCHAR,  -- this is constant through time/season
-    team_nm VARCHAR,  -- this can change
-    team_location VARCHAR,  -- this can change
-    team_nm_location VARCHAR,  -- this concatenates team_nm and team_location e.g 'Arizona Cardinals'
-    team_location_abbr VARCHAR,  -- the abbreviated version of team_location
-    team_conference VARCHAR,  -- this can change
-    team_division VARCHAR  -- this can change
-);
 
--- INSERT INTO nfl.team_alltime
--- SELECT * FROM read_csv_auto('~/Documents/GitHub/sports-statistics/data/team_alltime.csv');
+season  INTEGER,
+team_id INTEGER,
+team_nm VARCHAR,
+team_location VARCHAR,
+team_nm_location VARCHAR,
+team_location_abbreviation VARCHAR,
+conference_nm VARCHAR,
+division_nm VARCHAR,
+conference_id INTEGER,
+conference_division_nm VARCHAR,
+division_id INTEGER,
+season_id INTEGER
+  );
+
+INSERT INTO nfl.team_alltime
+SELECT    
+  season,
+  team_id,
+  team_nm,
+  team_location,
+  team_nm_location,
+  team_location_abbreviation,
+  conference_nm,
+  division_nm,
+  conference_id,
+  conference_division_nm,
+  division_id,
+  season_id 
+FROM read_csv_auto('~/Documents/GitHub/sports-statistics/data/team_alltime.csv') 
+where team_id is not null
+
+
+
+
 

@@ -41,6 +41,7 @@ df_with_home_ids <- clean_nfl_data %>%
 df_with_home_ids %>% 
   select(team_location_abbr_home,team_id_home)
 
+
 # Join with team_alltime to get team_id for away teams
 final_df <- df_with_home_ids %>%
   left_join(
@@ -60,13 +61,17 @@ final_df <- df_with_home_ids %>%
     points_home,
     points_away,
     home_win_flg
-  )
+  ) %>% 
+  mutate(home_point_diff = points_home - points_away,
+         h_adv = ifelse(location == "Home",1,0),
+         season_index = as.numeric(factor(season, levels = sort(unique(season)))))
 
 
 final_df %>% 
   select(game_id,team_id_home,team_id_away) %>% 
   filter(team_id_home %>% is.na())
 
+unique(final_df$h_adv)
 
 arrow::write_parquet(final_df,sink = '../../data/historical_games_points.parquet')
 

@@ -57,70 +57,8 @@ def get_parquet_file_from_data_folder(filepath: str):
     return conn.fetchdf()
 
 
-  # int<lower=1> N_games; // total games to evaluate
-  # int<lower=1> N_teams; // number of teams
-  # int<lower=2> N_seasons; // need two for prior in s+1
-  # 
-  # real ps[N_games]; //outcome: points scored
-  # real pa[N_games]; //outcome: points allowed
-  # real  d[N_games]; //outcome: point differential  (ps - pa) mean of d = mean(ps) - mean(pa), variance = var(ps) + var(pa)
-  # 
-  # int<lower = 1, upper=N_teams> H[N_games]; // vector of home team indices
-  # int<lower = 1, upper=N_teams> A[N_games]; // vector of away team indices
-  # int<lower = 1, upper=N_seasons> S[N_games]; // vector of season indices
-
-def prepare_stan_data(historical_games, team_alltime):
+def prepare_stan_data_season_overall_strength(historical_games, team_alltime):
     
-    # Total games
-    # games = historical_games.select(pl.len()).to_series().to_list()
-    # print(games)
-    # Total Teams (list of team counts by season) 
-    # teams = (
-    # team_alltime
-    # .select("season", "team_id")  # Select just the columns we need
-    # .unique()                     # Get unique season-team combinations
-    # .group_by("season")           # Group by season
-    # .agg(pl.count("team_id"))     # Count unique team_ids per season
-    # .sort("season")               # Sort by season
-    #         ).select("team_id").to_series().to_list() # make it stan format
-
-    # teams = team_alltime.select("team_id").unique().count().to_series().to_list()
-    # print(teams)
-    # Get unique teams and seasons from games
-    # unique_seasons = historical_games.select("season").unique().sort("season").to_series().to_list()
-    
-    # Total Seasons
-    # seasons = historical_games.select("season").unique().count().to_series().to_list()
-    # print(seasons)
-    # Get unique divisions
-    # unique_divisions = team_alltime.select("division_id").unique().to_series().to_list()
-    # print(unique_divisions)
-
-    # Get unique conferences
-    # unique_conferences = team_alltime.select("conference_id").unique().to_series().to_list()
-    # print(unique_conferences)
-    # Divisions
-    
-    # Join game data with team data for home and away teams
-    # df = df.join(
-    #     team_data.select(["season", "team_id", "division_id", "conference_id"]),
-    #     left_on=["season", "team_id_home"],
-    #     right_on=["season", "team_id"],
-    #     how="left"
-    # ).rename({
-    #     "division_id": "home_division_id",
-    #     "conference_id": "home_conference_id"
-    # })
-    # 
-    # df = df.join(
-    #     team_data.select(["season", "team_id", "division_id", "conference_id"]),
-    #     left_on=["season", "team_id_away"],
-    #     right_on=["season", "team_id"],
-    #     how="left"
-    # ).rename({
-    #     "division_id": "away_division_id",
-    #     "conference_id": "away_conference_id"
-    # })
     
   # Get scalar values directly
     teams_count = teams_dim.select("team_id").unique().count().item()
@@ -138,18 +76,7 @@ def prepare_stan_data(historical_games, team_alltime):
         'h_point_diff': historical_games.select(pl.col("home_point_diff").cast(pl.Int64)).to_series().to_list(),
         'h_adv': historical_games.select(pl.col("h_adv").cast(pl.Int64)).to_series().to_list()
     }   
-    # Create the stan_data dictionary
-    # stan_data = {
-    #     'teams': teams_dim.select("team_id").unique().count().to_series().to_list(),
-    #     'games': historical_games.select(pl.len()).to_series().to_list(),
-    #     'seasons':historical_games.select("season").unique().count().to_series().to_list(),
-    #     'H': historical_games.select(pl.col("team_id_home").cast(pl.Int64)).to_series().to_list(),
-    #     'A': historical_games.select(pl.col("team_id_away").cast(pl.Int64)).to_series().to_list(),
-    #     'S': historical_games.select(pl.col("season").cast(pl.Int64)).to_series().to_list(),
-    #     'h_point_diff': historical_games.select(pl.col("home_point_diff").cast(pl.Int64)).to_series().to_list(),
-    #     'h_adv': historical_games.select(pl.col("h_adv").cast(pl.Int64)).to_series().to_list()
-    # }
-    # 
+
     return stan_data
 
 def run_stan_model(stan_data, model_file, output_dir,

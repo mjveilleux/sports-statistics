@@ -16,7 +16,10 @@
 1. refine the final table so that it takes the latest name for each team (this is because Washington is weird)
 2. create an API for our HTMX + FastAPI web app (we gonna b 2 fast 4 u)
 3. add some generated quantities in the model
-    - best in XYZ
+    - best in 
+        - division
+        - conference
+        - league
     - put raw thetas in a simplex then posterior.
     - simluate matches for each season with previousd end of season estimates
     - predicted next year's end of season strength based on t-1

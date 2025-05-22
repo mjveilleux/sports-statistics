@@ -23,6 +23,7 @@ clean_nfl_data <- nfl_data %>%
     location,
     points_home = home_score,
     points_away = away_score
+    
   ) %>% 
   mutate(
     week_season_id = paste(week, season, sep = "-"),

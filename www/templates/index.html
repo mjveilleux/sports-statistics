@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <section class="season-section">
+        <h2>Teams</h2>
+        
+        <!-- This div will be updated by HTMX -->
+        <div id="season-overall-strength-container"
+             hx-get="/api/season-overall-strengths"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            <p>Loading stats...</p>
+        </div>
+    </section>
+</div>
+{% endblock %}

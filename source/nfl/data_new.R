@@ -29,11 +29,11 @@ dbExecute(con, "CREATE SCHEMA IF NOT EXISTS nfl;")
 team_alltime <- dbGetQuery(con, "SELECT * FROM nfl.team_alltime;")
 colnames(team_alltime
          )
+team_alltime %>% tibble()
 # Close the connection when done
-dbDisconnect(con)
 
 
-nfl_data %>% 
+clean_nfl_data = nfl_data %>% 
   filter(
     game_type == "REG"
   ) %>% 
@@ -49,8 +49,18 @@ nfl_data %>%
     points_away = away_score,
     #home_win_flag
   ) %>% 
-  mutate(week_season_id = paste(week,season,'-'),
+  mutate(week_season_id = paste(week,'-',season),
           home_win_flag = ifelse(points_home > points_away,TRUE,FALSE))
+
+
+# df is final table
+dbWriteTable(con, "nfl.historical_games_points", df, overwrite = TRUE)
+
+
+dbDisconnect(con)
+
+
+
 
 
 

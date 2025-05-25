@@ -33,9 +33,9 @@ clean_nfl_data <- nfl_data %>%
 df_with_home_ids <- clean_nfl_data %>%
   left_join(
     team_alltime %>% 
-      select(season, team_id, team_location_abbr) %>%
+      select(season, team_id, team_location_abbreviation) %>%
       rename(team_id_home = team_id),
-    by = c("season", "team_location_abbr_home" = "team_location_abbr")
+    by = c("season", "team_location_abbr_home" = "team_location_abbreviation")
   )
 
 df_with_home_ids %>% 
@@ -48,7 +48,7 @@ final_df <- df_with_home_ids %>%
     team_alltime %>% 
       select(season, team_id, team_location_abbr) %>%
       rename(team_id_away = team_id),
-    by = c("season", "team_location_abbr_away" = "team_location_abbr")
+    by = c("season", "team_location_abbr_away" = "team_location_abbreviation")
   ) %>%
   select(
     game_id,
@@ -78,4 +78,57 @@ unique(final_df$season_index)
 arrow::write_parquet(final_df,sink = '../../data/historical_games_points.parquet')
 
 duckdb::dbDisconnect(con)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+prepare_stan_data_season_overall_strength <- function(historical_games, team_alltime) {
+  
+  # Get scalar values using tidyverse
+  teams_count <- team_alltime %>% 
+    select(team_id) %>% 
+    unique() %>% 
+    nrow()
+  
+  games_count <- nrow(historical_games)
+  
+  seasons_count <- historical_games %>% 
+    select(season) %>% 
+    unique() %>% 
+    nrow()
+  
+  # Create the stan_data list with proper formats
+  stan_data <- list(
+    teams = teams_count,
+    games = games_count,
+    seasons = seasons_count,
+    H = historical_games %>% pull(team_id_home) %>% as.integer(),
+    A = historical_games %>% pull(team_id_away) %>% as.integer(),
+    S = historical_games %>% pull(season_index) %>% as.integer(),
+    h_point_diff = historical_games %>% pull(home_point_diff) %>% as.integer(),
+    h_adv = historical_games %>% pull(h_adv) %>% as.integer()
+  )
+  
+  return(stan_data)
+}
 

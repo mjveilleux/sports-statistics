@@ -59,6 +59,50 @@ dbWriteTable(con, "nfl.historical_games_points", df, overwrite = TRUE)
 
 dbDisconnect(con)
 
+team_alltime$team_id
+
+prepare_stan_data_season_overall_strength <- function(historical_games, team_alltime) {
+  
+  # Get scalar values using tidyverse
+  teams_count <- team_alltime %>% 
+    select(team_id) %>% 
+    unique() %>% 
+    nrow()
+  
+  games_count <- nrow(historical_games)
+  
+  seasons_count <- historical_games %>% 
+    select(season) %>% 
+    unique() %>% 
+    nrow()
+  
+  # Create the stan_data list with proper formats
+  stan_data <- list(
+    teams = teams_count,
+    games = games_count,
+    seasons = seasons_count,
+    H = historical_games %>% pull(team_id_home) %>% as.integer(),
+    A = historical_games %>% pull(team_id_away) %>% as.integer(),
+    S = historical_games %>% pull(season_index) %>% as.integer(),
+    h_point_diff = historical_games %>% pull(home_point_diff) %>% as.integer(),
+    h_adv = historical_games %>% pull(h_adv) %>% as.integer()
+  )
+  
+  return(stan_data)
+}
+
+
+prepare_stan_data_season_overall_strength(historical_games = clean_nfl_data,team_alltime = team_alltime )
+
+
+
+# test new v2 model
+
+
+
+
+
+
 
 
 

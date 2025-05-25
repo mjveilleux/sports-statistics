@@ -11,14 +11,10 @@ CREATE TABLE nfl.historical_games_points (
     location VARCHAR,
     points_home INTEGER,
     points_away INTEGER,
-    home_win_flg BOOLEAN,    -- or INTEGER (0/1) or VARCHAR ('Y'/'N')
-    home_point_diff INTEGER,
-    h_adv INTEGER,
-    season_index INTEGER
+    home_win_flg BOOLEAN    -- or INTEGER (0/1) or VARCHAR ('Y'/'N')
 );
 
 
 INSERT INTO nfl.historical_games_points
 SELECT * FROM read_parquet('~/Documents/GitHub/sports-statistics/data/historical_games_points.parquet');
-
 

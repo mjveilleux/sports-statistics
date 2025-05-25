@@ -14,6 +14,8 @@ library(rstan)
   # analysis of the 2024 season
     # we'll use the table of wins and median strengths to tell the story of the 2024 season outcome 
     # why some teams did better and others worse (explaining the differences in wins vs median team strength estimate)
+    # cheifs and eagles specifically -- allude model that takes apart off and def strengths would show a better picture for the Chiefs
+      # acquiring Barkely took the Eagles offense to a different level something unexpected in the model
 # take-aways: a lot can happen in the off-season / develop over a season 
 # every year is a new year filled with great variances in outcomes
 
@@ -263,7 +265,7 @@ fit_extract_thetas = fit_extract_thetas %>%
   mutate(forecast = ifelse(season == 2024, 'forecast','model'))
 
 
-ggplot(fit_extract_thetas %>%  filter(team %in% c('Chiefs','Patriots')) , aes(x = season, y = theta_median, color = forecast)) +
+ggplot(fit_extract_thetas %>%  filter(team %in% c('Chiefs','Eagles')) , aes(x = season, y = theta_median, color = forecast)) +
   geom_errorbar(aes(ymin = theta_lower, ymax = theta_upper), 
                 width = 0.2, alpha = 0.7) +
   geom_line(size = 1) +
